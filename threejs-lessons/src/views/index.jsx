@@ -18,12 +18,21 @@ const Page = () => {
 		// })
 
 		// 创建材质 //网格材质，受光照影响
-		const material = new THREE.MeshLambertMaterial({
-			color: 0xff0000,
-		})
+		// const material = new THREE.MeshLambertMaterial({
+		// 	color: 0xff0000,
+		// })
+		// 给每个面设置不同的颜色
+		const materialList = []
+		for (let i = 0; i < geometry.groups.length; i++) {
+      const material = new THREE.MeshLambertMaterial({
+        color: Math.random() * 0xffffff,
+      })
+      materialList.push(material)
+		}
 
+		console.log(geometry)
 		// 创建网格
-		const mesh = new THREE.Mesh(geometry, material)
+		const mesh = new THREE.Mesh(geometry, materialList)
 		// 添加到场景
 		scene.add(mesh)
 
@@ -31,12 +40,12 @@ const Page = () => {
 		const axesHelper = new THREE.AxesHelper(5)
 		scene.add(axesHelper)
 
-    // 创建全局光源
-    const ambientLight = new THREE.AmbientLight(0xffffff,0.5)
-    // 创建方向光源
-    const directionalLight = new THREE.DirectionalLight(0xffffff,0.5)
-    
-    scene.add(ambientLight, directionalLight)
+		// 创建全局光源
+		const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+		// 创建方向光源
+		const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
+
+		scene.add(ambientLight, directionalLight)
 
 		// 创建相机
 		const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
