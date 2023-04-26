@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 const Page = () => {
 	useEffect(() => {
@@ -24,10 +25,10 @@ const Page = () => {
 		// 给每个面设置不同的颜色
 		const materialList = []
 		for (let i = 0; i < geometry.groups.length; i++) {
-      const material = new THREE.MeshLambertMaterial({
-        color: Math.random() * 0xffffff,
-      })
-      materialList.push(material)
+			const material = new THREE.MeshLambertMaterial({
+				color: Math.random() * 0xffffff,
+			})
+			materialList.push(material)
 		}
 
 		console.log(geometry)
@@ -38,7 +39,9 @@ const Page = () => {
 
 		// 创建坐标轴
 		const axesHelper = new THREE.AxesHelper(5)
-		scene.add(axesHelper)
+		// 添加辅助平面
+		const gridHelper = new THREE.GridHelper()
+		scene.add(axesHelper, gridHelper)
 
 		// 创建全局光源
 		const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
@@ -72,6 +75,26 @@ const Page = () => {
 
 		// 渲染
 		renderer.render(scene, camera)
+
+		// 创建轨道控制器
+		const orbitControls = new OrbitControls(camera, canvas)
+
+		// 开启惯性
+		orbitControls.enableDamping = true
+
+		const clock = new THREE.Clock()
+
+		const animate = () => {
+			const elapsedTime = clock.getElapsedTime()
+			orbitControls.update()
+			renderer.render(scene, camera)
+			// 旋转
+			// mesh.rotation.y += elapsedTime / 100
+      // 让相机运动
+      camera.position.x = Math.cos(elapsedTime) 
+			requestAnimationFrame(animate)
+		}
+		animate()
 	}, [])
 
 	return (
