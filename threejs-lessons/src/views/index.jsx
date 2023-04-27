@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import Stats from 'three/examples/jsm/libs/stats.module'
 
 const Page = () => {
 	useEffect(() => {
@@ -76,6 +77,11 @@ const Page = () => {
 		// 渲染
 		renderer.render(scene, camera)
 
+		// 创建性能监控
+		const stats = new Stats()
+		stats.showPanel(0)
+		document.body.appendChild(stats.dom)
+
 		// 创建轨道控制器
 		const orbitControls = new OrbitControls(camera, canvas)
 
@@ -90,16 +96,28 @@ const Page = () => {
 			renderer.render(scene, camera)
 			// 旋转
 			// mesh.rotation.y += elapsedTime / 100
-      // 让相机运动
-      camera.position.x = Math.cos(elapsedTime) 
+			// 让相机运动
+			camera.position.x = Math.cos(elapsedTime)
 			requestAnimationFrame(animate)
+			stats.update()
 		}
 		animate()
+
+		// 监听窗口变化
+		window.addEventListener('resize', () => {
+			const width = (canvas.width = window.innerWidth)
+			const height = (canvas.height = window.innerHeight)
+			// 设置渲染器大小
+			renderer.setSize(width, height)
+			// 设置相机纵横比
+			camera.aspect = width / height
+			// 更新相机投影矩阵
+			camera.updateProjectionMatrix()
+		})
 	}, [])
 
 	return (
 		<>
-			start your project
 			<canvas id="c" />;
 		</>
 	)
